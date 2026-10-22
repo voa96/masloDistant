@@ -6,34 +6,85 @@
     <title>Document</title>
 </head>
 <body>
-    <form id="form">
-        <input type="text" placeholder="введите имя" name="asd" id="1">
-        <input type="text" placeholder="введите город" name="asdfasd" id="2">
+    <form id="formReg">
+        <input type="text" placeholder="введите емаил" id="emailReg">
+        <input type="text" placeholder="введите пароль" id="passwordReg">
         <button type="submit">отправить данные</button>
     </form>
+    <form id="formAuth">
+        <input type="text" placeholder="введите емаил" name="email" id="emailAuth">
+        <input type="text" placeholder="введите пароль" name="password" id="passwordAuth">
+        <button type="submit">отправить данные</button>
+    </form>
+    <button id="logOut">выйти</button>
+    <button id="loadData"></button>
 </body>
 <script>
-    const API_URL = "http://localhost:3000/people"
+    const API_URL = "http://localhost:3000"
 
-    const nameInput = document.querySelector('#1')
-    const cutyInput = document.querySelector('#2')
-    const form = document.querySelector('#form')
+    const form = document.querySelector('#formReg')
+    const email = document.querySelector('#emailReg')
+    const password = document.querySelector('#passwordReg')
 
     form.addEventListener('submit', async (event) =>{
 
         event.preventDefault()
         const newHuman = {
-            name: nameInput.value.trim(),
-            city: cutyInput.value.trim(),
+            email: email.value.trim(),
+            password: password.value.trim(),
         }
-        const response = await fetch(API_URL,{
+        const response = await fetch(API_URL+"/register",{
             method:'POST',
+            body: JSON.stringify(newHuman),
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newHuman)
         })
-        console.log("соси" + await response.json())
+        const data = await response.json()
+        localStorage.setItem('token', data.token)
+    })
+
+
+    const formAuth = document.querySelector("#formAuth")
+    const emailAuth = document.querySelector("#emailAuth")
+    const passwordAuth = document.querySelector("#passwordAuth")
+
+    
+    formAuth.addEventListener('submit', async (event) =>{
+
+        event.preventDefault()
+        const newHuman = {
+            email: emailAuth.value.trim(),
+            password: passwordAuth.value.trim(),
+        }
+        const response = await fetch(API_URL+"/login",{
+            method:'POST',
+            body: JSON.stringify(newHuman),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        const data = await response.json()
+        if(!response.ok && data.token){
+            localStorage.setItem('token', data.token)
+        }
+    })
+
+    const logOut = document.querySelector('#logOut')
+
+    logOut.addEventListener('click', ()=>{
+        
+    })
+
+
+    const getData = document.querySelector('#loadData')
+    const token= localStorage.getItem('token')
+    getData.addEventListener('click', async () =>{
+        const response = await fetch(API_URL+"/people",{
+            headers:{
+                Authorization: `Bearer${token}`
+            }
+        })
     })
 </script>
 </html>
