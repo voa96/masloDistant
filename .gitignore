@@ -1,2 +1,2 @@
 /serv/node_modules
-*.env
+/serv/*.env
