@@ -18,12 +18,11 @@ async function start() {
         await sequelize.authenticate()
         await sequelize.sync()
         app.listen(PORT, () => {
-            console.log(`http://localhost:3000/people`);
+            console.log(`http://localhost:3000/api`);
         })
         
     } catch (error) {
         console.log("err:" + error);
-        
     }
 }
 start()

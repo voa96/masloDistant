@@ -17,7 +17,10 @@
         <button type="submit">отправить данные</button>
     </form>
     <button id="logOut">выйти</button>
-    <button id="loadData"></button>
+    <button id="loadData">все юзеры</button>
+    <div class="users">
+        
+    </div>
 </body>
 <script>
     const API_URL = "http://localhost:3000"
@@ -73,7 +76,7 @@
     const logOut = document.querySelector('#logOut')
 
     logOut.addEventListener('click', ()=>{
-        
+        localStorage.removeItem('token')
     })
 
 

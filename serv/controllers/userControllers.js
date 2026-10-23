@@ -1,24 +1,24 @@
 const { User } = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = "JHLKFEF;WEDLWWDFENIJ"
+const SECRET_KEY = process.env.SECRET_KEY
+
+
 
 const generateJwt = ({email, id})=>{
     return jwt.sign({email,id}, SECRET_KEY, {expiresIn:'24h'})
 }
-
-exports.jwt = SECRET_KEY
 
 exports.login = async(req,res) =>{
     try {
         const {email, password} = req.body
         const candidate = await User.findOne({where: {email}})
         if (!candidate){
-            return res.status(404).json({message:"пользователя не существует"})
+            return res.status(404).json({message:"user not exist"})
         }
         const match = await bcrypt.compare(password, candidate.password)
         if(!match){
-            return res.status(404).json({message:"пароли не совпадают"})
+            return res.status(404).json({message:"no match password"})
         }
         const token = generateJwt({email:candidate.email, id:candidate.id})
         return res.status(201).json({where:"User auth", token: token})
@@ -33,7 +33,7 @@ exports.register = async(req,res) =>{
         const {email, password} = req.body
         const candidate = await User.findOne({where:email})
         if(!email || !password){
-            return res.status(400).json({message:"все поля обязательны"})
+            return res.status(400).json({message:"required"})
         }
         if(candidate){
             return res.status(409).json({message:"user registered"})
@@ -44,7 +44,7 @@ exports.register = async(req,res) =>{
         return res.status(201).json({message:'User 201', token:token})
     } catch (error) {
         console.log("error:"+ error);
-        return res.status(500).json({where:"ошибка сервера"})
+        return res.status(500).json({where:"err server"})
     }
 }
 
